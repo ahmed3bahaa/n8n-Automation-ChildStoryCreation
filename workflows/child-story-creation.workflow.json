@@ -1,0 +1,630 @@
+﻿{
+    "name":  "AI Child Storybook Creation",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "generate-image",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  2,
+                      "position":  [
+                                       -2520,
+                                       -860
+                                   ],
+                      "id":  "454348e0-3b94-44e0-9470-99100e3b5c2a",
+                      "name":  "Webhook",
+                      "webhookId":  "855fd3f0-44c4-4558-bcd7-32f2c0ac1fc1"
+                  },
+                  {
+                      "parameters":  {
+                                         "assignments":  {
+                                                             "assignments":  [
+                                                                                 {
+                                                                                     "id":  "84ab080f-0af9-491f-9df7-cfe6847b78ea",
+                                                                                     "name":  "body.theme",
+                                                                                     "value":  "=\t{{$json[\"body\"][\"theme\"]}}",
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "a5d117a4-5404-46d2-939e-abebdcacf0f3",
+                                                                                     "name":  "body.setting",
+                                                                                     "value":  "=\t{{$json[\"body\"][\"setting\"]}}",
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "3093383f-4aac-48a4-b7d4-80c21766eb70",
+                                                                                     "name":  "body.email",
+                                                                                     "value":  "=\t{{$json[\"body\"][\"email\"]}}",
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "38393fd0-d360-4850-9d0f-cb9ca6e41183",
+                                                                                     "name":  "body.character",
+                                                                                     "value":  "={{ $json[\"body\"][\"character\"] }}",
+                                                                                     "type":  "string"
+                                                                                 }
+                                                                             ]
+                                                         },
+                                         "includeOtherFields":  true,
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  3.4,
+                      "position":  [
+                                       -2300,
+                                       -860
+                                   ],
+                      "id":  "f06b9259-b999-4d49-8b6c-ed282c2a96c4",
+                      "name":  "Set"
+                  },
+                  {
+                      "parameters":  {
+                                         "modelId":  {
+                                                         "__rl":  true,
+                                                         "value":  "gpt-3.5-turbo",
+                                                         "mode":  "list",
+                                                         "cachedResultName":  "GPT-3.5-TURBO"
+                                                     },
+                                         "messages":  {
+                                                          "values":  [
+                                                                         {
+                                                                             "content":  "= You are a parser. When I give you a single line with three parts,\n      they will always be in this order: {{ $json.body.character }}, then {{ $json.body.setting }}, then {{ $json.body.theme }}.\n      Extract and label them exactly in that order.",
+                                                                             "role":  "system"
+                                                                         },
+                                                                         {
+                                                                             "content":  "=|\n      Input: {{$json.body.character}}|{{$json.body.setting}}|{{$json.body.theme}}\n      Please output:\n      {\n        \"character\": ...,\n        \"setting\": ...,\n        \"theme\": ...\n      }"
+                                                                         }
+                                                                     ]
+                                                      },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.openAi",
+                      "typeVersion":  1.8,
+                      "position":  [
+                                       -2080,
+                                       -860
+                                   ],
+                      "id":  "7081805e-347a-4ba4-a809-67d3f48b2e08",
+                      "name":  "Parser"
+                  },
+                  {
+                      "parameters":  {
+                                         "modelId":  {
+                                                         "__rl":  true,
+                                                         "value":  "gpt-4",
+                                                         "mode":  "list",
+                                                         "cachedResultName":  "GPT-4"
+                                                     },
+                                         "messages":  {
+                                                          "values":  [
+                                                                         {
+                                                                             "content":  "=You are a children story writer. Write exactly five scenes according to the parsed input: {{ $json.message.content }}. Each scene must be between 3 and 5 sentences long. Prefix each scene with \"Scene 1:\", \"Scene 2:\", etc.",
+                                                                             "role":  "system"
+                                                                         },
+                                                                         {
+                                                                             "content":  "Label each scene(output) like:\nScene 1:\nScene 2:\nScene 3:\nScene 4:\nScene 5:"
+                                                                         }
+                                                                     ]
+                                                      },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.openAi",
+                      "typeVersion":  1.8,
+                      "position":  [
+                                       -1704,
+                                       -860
+                                   ],
+                      "id":  "bab7ea04-d81d-4b8c-a5cf-a5b465a20e0f",
+                      "name":  "Split"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const story = $input.first().json.message.content\nconst scenes = story.split(/Scene\\s\\d+:/g).filter(s =\u003e s.trim() !== \"\");\n\nreturn scenes.map((scene, index) =\u003e {\n  return {\n    json: {\n      sceneNumber: index + 1,\n      text: scene.trim()\n    }\n  };\n});\n"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       -1328,
+                                       -860
+                                   ],
+                      "id":  "24497375-4223-4983-ab8b-d9b5bdad9f8a",
+                      "name":  "scene split"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpHeaderAuth",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Authorization",
+                                                                                         "value":  "=Bearer {{$env.HUGGINGFACE_API_TOKEN}}"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "Accept",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "bodyParameters":  {
+                                                                "parameters":  [
+                                                                                   {
+                                                                                       "name":  "inputs",
+                                                                                       "value":  "={{ $json.text }}"
+                                                                                   }
+                                                                               ]
+                                                            },
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "text"
+                                                                                       }
+                                                                      }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       -2520,
+                                       -1220
+                                   ],
+                      "id":  "0f258c94-27dd-4d15-a512-c9f0f1d81341",
+                      "name":  "flux.ai",
+                      "retryOnFail":  true,
+                      "alwaysOutputData":  true
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.pdfshift.io/v3/convert/pdf",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpBasicAuth",
+                                         "sendBody":  true,
+                                         "bodyParameters":  {
+                                                                "parameters":  [
+                                                                                   {
+                                                                                       "name":  "source",
+                                                                                       "value":  "={{ $json.html }}"
+                                                                                   }
+                                                                               ]
+                                                            },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       652,
+                                       -860
+                                   ],
+                      "id":  "694ed909-a844-4064-a35e-bead5467899d",
+                      "name":  "pdf.call",
+                      "alwaysOutputData":  false
+                  },
+                  {
+                      "parameters":  {
+                                         "fromEmail":  "={{$env.SMTP_FROM_EMAIL}}",
+                                         "toEmail":  "={{ $(\u0027Webhook\u0027).first().json.body.email }}",
+                                         "subject":  "Your AI Storybook PDF",
+                                         "html":  "=\u003cp\u003eHello!\u003c/p\u003e\u003cp\u003eYour generated storybook has been delivered as a PDF attachment.\u003c/p\u003e",
+                                         "options":  {
+                                                         "attachments":  "=data"
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.emailSend",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       880,
+                                       -960
+                                   ],
+                      "id":  "62e4bd15-dfbe-4c4d-b1f2-3a7d6a2d2e70",
+                      "name":  "Send Email",
+                      "webhookId":  "cc8c9e95-c495-4032-b61e-c5a4d33d048a"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const scenes = $items(\"scene split\", 0, 0);\nconst images = $items(\"binary-json\");\n\nconst output = scenes.map((scene, idx) =\u003e ({\n  json: {\n    sceneNumber: scene.json.sceneNumber ?? idx + 1,\n    text: scene.json.text,\n   imageBase64: images[idx]?.json?.image \n                || images[idx]?.binary?.image?.data\n                || null, \n  }\n}));\n\nreturn output;\n"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       212,
+                                       -860
+                                   ],
+                      "id":  "6fa830f1-ebb6-4b6b-9881-f499fd1119c1",
+                      "name":  "Scene-image-align"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "// pull in every scene/item\nconst scenes = $input.all();  \n\n// start your document\nlet html = `\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta charset=\"UTF-8\"\u003e\n    \u003ctitle\u003eStory Scenes\u003c/title\u003e\n    \u003cstyle\u003e\n      body { font-family: Arial, sans-serif; margin: 20px; }\n      .scene-card {\n        border: 1px solid #ddd;\n        border-radius: 8px;\n        padding: 20px;\n        margin-bottom: 40px;\n        box-shadow: 2px 2px 12px rgba(0,0,0,0.1);\n        /* force each card to start on a new PDF page */\n        page-break-after: always;\n      }\n      .scene-image img {\n        max-width: 100%;\n        height: auto;\n        border-radius: 8px;\n      }\n    \u003c/style\u003e\n  \u003c/head\u003e\n  \u003cbody\u003e\n`;\n\nscenes.forEach(scene =\u003e {\n  const { sceneNumber, text, imageBase64 } = scene.json;\n  html += `\n    \u003cdiv class=\"scene-card\"\u003e\n      \u003ch2\u003eScene ${sceneNumber}\u003c/h2\u003e\n      \u003cp\u003e${text}\u003c/p\u003e\n      ${ imageBase64\n         ? `\u003cdiv class=\"scene-image\"\u003e\n              \u003cimg src=\"data:image/png;base64,${imageBase64}\" alt=\"Scene ${sceneNumber}\"/\u003e\n            \u003c/div\u003e`\n         : ``\n      }\n    \u003c/div\u003e\n  `;\n});\n\nhtml += `\n  \u003c/body\u003e\n\u003c/html\u003e\n`;\n\n// return one big HTML\nreturn { html };\n"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       432,
+                                       -860
+                                   ],
+                      "id":  "0e31ad8e-210d-429d-bc97-bcaa3a0871c3",
+                      "name":  "binary-to-html"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "binaryToPropery",
+                                         "destinationKey":  "image",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.extractFromFile",
+                      "typeVersion":  1,
+                      "position":  [
+                                       -8,
+                                       -860
+                                   ],
+                      "id":  "9b070fa1-44ea-40e5-a5e9-5b99037f72fa",
+                      "name":  "binary-json"
+                  },
+                  {
+                      "parameters":  {
+                                         "name":  "={{ $(\u0027Set\u0027).first().json.body.character }}",
+                                         "driveId":  {
+                                                         "__rl":  true,
+                                                         "value":  "My Drive",
+                                                         "mode":  "list",
+                                                         "cachedResultName":  "My Drive",
+                                                         "cachedResultUrl":  "https://drive.google.com/drive/my-drive"
+                                                     },
+                                         "folderId":  {
+                                                          "__rl":  true,
+                                                          "value":  "root",
+                                                          "mode":  "list",
+                                                          "cachedResultName":  "/ (Root folder)"
+                                                      },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.googleDrive",
+                      "typeVersion":  3,
+                      "position":  [
+                                       872,
+                                       -760
+                                   ],
+                      "id":  "9fd81dd7-c44a-4844-924d-6a9745450317",
+                      "name":  "Google Drive"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "move",
+                                         "fileId":  {
+                                                        "__rl":  true,
+                                                        "value":  "={{ $json.id }}",
+                                                        "mode":  "id"
+                                                    },
+                                         "driveId":  {
+                                                         "__rl":  true,
+                                                         "mode":  "list",
+                                                         "value":  "My Drive"
+                                                     },
+                                         "folderId":  {
+                                                          "__rl":  true,
+                                                          "mode":  "list",
+                                                          "value":  "root",
+                                                          "cachedResultName":  "/ (Root folder)"
+                                                      }
+                                     },
+                      "type":  "n8n-nodes-base.googleDrive",
+                      "typeVersion":  3,
+                      "position":  [
+                                       1092,
+                                       -760
+                                   ],
+                      "id":  "a5c42232-967a-4ded-8aa1-3b03f00dc42b",
+                      "name":  "Google Drive1"
+                  },
+                  {
+                      "parameters":  {
+                                         "resource":  "image",
+                                         "prompt":  "={{ $json.text }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.openAi",
+                      "typeVersion":  1.8,
+                      "position":  [
+                                       -1100,
+                                       -860
+                                   ],
+                      "id":  "16627710-ac6f-4360-aeb5-1d47df908d3f",
+                      "name":  "Generate-image"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "={{ $json.output.url }}",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpBasicAuth",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "content-type",
+                                                                                         "value":  "application/json"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "=Authorization ",
+                                                                                         "value":  "Basic"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "contentType":  "raw",
+                                         "rawContentType":  "application/json",
+                                         "body":  "={{ JSON.stringify({   resize: {     method: \"fit\",     width: 800,     height: 600   } }) }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       -440,
+                                       -860
+                                   ],
+                      "id":  "cd1b3bfa-b344-4a74-ba13-eb49dd11deaf",
+                      "name":  "compress"
+                  },
+                  {
+                      "parameters":  {
+                                         "url":  "={{ $json.output.url }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       -2520,
+                                       -1380
+                                   ],
+                      "id":  "562cd08a-849b-4d5e-893d-c19b3dc749a2",
+                      "name":  "Get-Resize"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.tinify.com/shrink",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpBasicAuth",
+                                         "sendBody":  true,
+                                         "contentType":  "binaryData",
+                                         "inputDataFieldName":  "data",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       -888,
+                                       -860
+                                   ],
+                      "id":  "9906a4f6-110e-438c-abd1-db22ef2ba307",
+                      "name":  "compress-image1"
+                  },
+                  {
+                      "parameters":  {
+                                         "url":  "={{ $json.output.url }}",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       -660,
+                                       -860
+                                   ],
+                      "id":  "3f681f9d-f850-4c31-aefe-65bbef1c6257",
+                      "name":  "Get-compressed"
+                  }
+              ],
+    "connections":  {
+                        "Webhook":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "Set",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "Set":  {
+                                    "main":  [
+                                                 [
+                                                     {
+                                                         "node":  "Parser",
+                                                         "type":  "main",
+                                                         "index":  0
+                                                     }
+                                                 ]
+                                             ]
+                                },
+                        "Parser":  {
+                                       "main":  [
+                                                    [
+                                                        {
+                                                            "node":  "Split",
+                                                            "type":  "main",
+                                                            "index":  0
+                                                        }
+                                                    ]
+                                                ]
+                                   },
+                        "Split":  {
+                                      "main":  [
+                                                   [
+                                                       {
+                                                           "node":  "scene split",
+                                                           "type":  "main",
+                                                           "index":  0
+                                                       }
+                                                   ]
+                                               ]
+                                  },
+                        "scene split":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Generate-image",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "flux.ai":  {
+                                        "main":  [
+                                                     [
+
+                                                     ]
+                                                 ]
+                                    },
+                        "pdf.call":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "Send Email",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          },
+                                                          {
+                                                              "node":  "Google Drive",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Scene-image-align":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "binary-to-html",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "binary-to-html":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "pdf.call",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "binary-json":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Scene-image-align",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "Google Drive":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Google Drive1",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Generate-image":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "compress-image1",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "compress":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "binary-json",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Get-Resize":  {
+                                           "main":  [
+                                                        [
+
+                                                        ]
+                                                    ]
+                                       },
+                        "compress-image1":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Get-compressed",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Get-compressed":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "compress",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           }
+                    },
+    "active":  false,
+    "settings":  {
+                     "executionOrder":  "v1"
+                 },
+    "tags":  [
+
+             ]
+}
