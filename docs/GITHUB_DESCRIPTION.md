@@ -1,43 +1,25 @@
-# GitHub Description
+﻿# GitHub Repository Setup Notes
 
-Use this in the GitHub repository About section:
+Use this text in the GitHub repository About section:
 
-```text
-n8n workflow automation that generates personalized AI children's storybooks with story scenes, images, PDF conversion, Google Drive storage, and email delivery.
-```
+~~~text
+Sanitized n8n workflow automation that generates personalized AI childrens storybooks with story scenes, images, PDF conversion, Google Drive storage, and email delivery.
+~~~
 
 ## Suggested Topics
 
-```text
-n8n
-automation
-workflow
-openai
-ai-story-generation
-children-story
-storybook
-pdf-generation
-google-drive
-email-automation
-no-code
-low-code
-```
+~~~text
+n8n, automation, openai, story-generation, pdf-generation, google-drive, email-automation
+~~~
 
-## Longer Summary
+## README Image Placeholders
 
-This project provides a sanitized n8n workflow template for AI-powered child storybook creation. A webhook receives a character, setting, theme, and recipient email; AI generates a structured five-scene story; scene images are generated and aligned; HTML is converted into a PDF; and the result is delivered by email and stored in Google Drive.
+The README follows the structure from `ahmed3bahaa/readme-template` and currently uses placeholder images under `docs/images/`:
 
-## Visuals Recommendation
+- `docs/images/logo-placeholder.svg`
+- `docs/images/project-overview-placeholder.svg`
+- `docs/images/workflow-placeholder.svg`
 
-Yes, visuals would help this project. Add:
+Replace these files manually with final screenshots or diagrams when they are ready. Keep the same filenames if you do not want to edit the README again.
 
-- Screenshot of the n8n workflow canvas.
-- Screenshot of a sample webhook request.
-- Screenshot of a generated PDF page.
-- Simple flow diagram: Webhook -> AI story -> images -> HTML/PDF -> email + Drive.
-
-Store future visuals in:
-
-```text
-docs/assets/
-```
+Do not commit private credentials, real secrets, or large generated artifacts. Use sanitized visuals for public GitHub documentation.
