@@ -7,16 +7,13 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/ahmed3bahaa/n8n-Automation-ChildStoryCreation">
-    <img src="docs/images/logo-placeholder.svg" alt="n8n Automation - Child Story Creation logo placeholder" width="90" height="90">
-  </a>
 
   <h3 align="center">n8n Automation - Child Story Creation</h3>
 
   <p align="center">
     Sanitized n8n workflow automation that generates personalized AI childrens storybooks with story scenes, images, PDF conversion, Google Drive storage, and email delivery.
     <br />
-    <a href="docs/GITHUB_DESCRIPTION.md"><strong>Explore the docs Â»</strong></a>
+    <a href="docs/GITHUB_DESCRIPTION.md"><strong>Explore the docs</strong></a>
     <br />
     <br />
     <a href="#usage">View Usage</a>
@@ -46,7 +43,6 @@
 
 ## About The Project
 
-[![Project overview placeholder][project-screenshot]](#usage)
 
 Sanitized n8n workflow automation that generates personalized AI childrens storybooks with story scenes, images, PDF conversion, Google Drive storage, and email delivery.
 
@@ -60,7 +56,6 @@ The repository currently offers:
 - HTML storybook assembly and PDF conversion
 - Google Drive upload and email delivery
 
-This README follows the shared template requested for the repository set and keeps the claims limited to files and documentation present in this project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -115,31 +110,13 @@ Reconnect credentials inside n8n
 Test the webhook and activate the workflow
 ~~~
 
-### Visual Placeholders
-
-Placeholder images are included under `docs/images/` so you can replace them manually later without changing the README layout.
-
-<p align="center">
-  <img src="docs/images/project-overview-placeholder.svg" alt="n8n Automation - Child Story Creation overview placeholder" width="48%">
-  <img src="docs/images/workflow-placeholder.svg" alt="n8n Automation - Child Story Creation workflow placeholder" width="48%">
-</p>
-
-Suggested final visuals:
-
-- Project overview screenshot or main terminal output.
-- Workflow, architecture, or data-flow diagram.
-- Example result, dashboard, report, or generated artifact screenshot.
-- Short GIF only when it is small and useful.
-
-Avoid committing large raw videos, private datasets, credentials, runtime logs, or generated secrets. Use sanitized screenshots and diagrams.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## How It Works
 
-`	ext
+```text
 Webhook -> OpenAI story planning -> scene generation -> image generation -> HTML storybook -> PDF conversion -> email and Google Drive
-`
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -164,18 +141,16 @@ Import the workflow into n8n
 Run examples/sample-request.json through the webhook after credentials are connected
 ~~~
 
-Some validations depend on local tools, services, datasets, API credentials, or a configured lab environment.
+Live checks need the matching local services, datasets, credentials, or lab tools installed first.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Roadmap
 
-- [ ] Replace placeholder images with final screenshots or diagrams.
-- [ ] Keep setup commands synchronized with the current project files.
-- [ ] Add more examples or test fixtures when the project grows.
-- [ ] Add a repository-level license if the project will be reused outside its original context.
-
-See the [open issues](https://github.com/ahmed3bahaa/n8n-Automation-ChildStoryCreation/issues) for proposed features and known issues.
+- Add a sanitized workflow export that can be imported directly into n8n.
+- Document the credentials and environment variables needed for each optional integration.
+- Add example story outputs so the automation result is clear without exposing private data.
+- Create a small troubleshooting section for failed nodes, missing keys, and delivery errors.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -214,7 +189,7 @@ Contributions are welcome for documentation, examples, tests, and implementation
 
 ## License
 
-No repository-level license file was verified in this project. Add a license before reuse or distribution outside the intended coursework, lab, or prototype context.
+This repository does not include a root license yet. Add one before reusing or distributing the project outside its original coursework, lab, or prototype context.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -241,4 +216,3 @@ Project Link: [https://github.com/ahmed3bahaa/n8n-Automation-ChildStoryCreation]
 [stars-url]: https://github.com/ahmed3bahaa/n8n-Automation-ChildStoryCreation/stargazers
 [issues-shield]: https://img.shields.io/github/issues/ahmed3bahaa/n8n-Automation-ChildStoryCreation.svg?style=for-the-badge
 [issues-url]: https://github.com/ahmed3bahaa/n8n-Automation-ChildStoryCreation/issues
-[project-screenshot]: docs/images/project-overview-placeholder.svg
